@@ -126,7 +126,7 @@ else
 		[[ "${HEIGHT:-0}" != "0" ]] && video_format="${video_format}[height<=${HEIGHT}]"
 	fi
 	unset filepath
-	filename=$(yt-dlp $COOKIE_ARGS --print filename -o "%(title)s.%(ext)s" "${URL}" \
+	filename=$(yt-dlp ${COOKIE_ARGS} --print filename -o "%(title)s.%(ext)s" "${URL}" \
            | sed 's/[^a-zA-Z0-9._-]/-/g')
 fi
 if [[ -z "${filename}" ]]; then
@@ -154,13 +154,13 @@ fi
 if [[ ! -f "${cache}/audio.m4a" ]] || [[ ! -f "${cache}/video.mp4" ]]; then
 	if [[ -n "${audio_format:-}" ]] && [[ -n "${video_format:-}" ]]; then
 		if [[ ! -f "${cache}/audio.m4a" ]]; then
-			if ! yt-dlp $COOKIE_ARGS -f "${audio_format}" -o "${cache}/audio.m4a" "${URL}" || [[ ! -f "${cache}/audio.m4a" ]]; then
+			if ! yt-dlp ${COOKIE_ARGS} -f "${audio_format}" -o "${cache}/audio.m4a" "${URL}" || [[ ! -f "${cache}/audio.m4a" ]]; then
 				echo "[ERROR] yt-dlp failed to download audio."
 				exit 1
 			fi
 		fi
 		if [[ ! -f "${cache}/video.mp4" ]]; then
-			if ! yt-dlp $COOKIE_ARGS -f "${video_format}" -o "${cache}/video.mp4" "${URL}" || [[ ! -f "${cache}/video.mp4" ]]; then
+			if ! yt-dlp ${COOKIE_ARGS} -f "${video_format}" -o "${cache}/video.mp4" "${URL}" || [[ ! -f "${cache}/video.mp4" ]]; then
 				echo "[ERROR] yt-dlp failed to download video."
 				exit 1
 			fi
@@ -168,7 +168,7 @@ if [[ ! -f "${cache}/audio.m4a" ]] || [[ ! -f "${cache}/video.mp4" ]]; then
 	else
 		if [[ -z "${filepath:-}" ]]; then
 			if [[ ! -f "${cache}/${filename}" ]]; then
-				if ! yt-dlp $COOKIE_ARGS -o "${cache}/${filename}" "${URL}" || [[ ! -f "${cache}/${filename}" ]]; then
+				if ! yt-dlp ${COOKIE_ARGS} -o "${cache}/${filename}" "${URL}" || [[ ! -f "${cache}/${filename}" ]]; then
 					echo "[ERROR] yt-dlp failed to download audio+video."
 					exit 1
 				fi
