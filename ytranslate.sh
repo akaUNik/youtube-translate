@@ -7,7 +7,7 @@ trap handle_exit EXIT;
 # Ensure yt-dlp uses your Chrome cookies for authentication:
 #   You can replace "--cookies-from-browser chrome" with
 #   "--cookies /home/youruser/.yt-dlp/cookies.txt" if you export manually.
-COOKIE_ARGS="--cookies /content/www.youtube.com_cookies.txt"
+COOKIE_ARGS='--cookies /content/www.youtube.com_cookies.txt'
 
 __file="$(basename $0)";
 
