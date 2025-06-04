@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail;
 trap handle_exit EXIT;
+
+
+# -------------------------------------------------------------------
+# Ensure yt-dlp uses your Chrome cookies for authentication:
+#   You can replace "--cookies-from-browser chrome" with
+#   "--cookies /home/youruser/.yt-dlp/cookies.txt" if you export manually.
+COOKIE_ARGS="--cookies /content/www.youtube.com_cookies.txt"
+
 __file="$(basename $0)";
 
 VERSION='1.0.0'
@@ -118,7 +126,8 @@ else
 		[[ "${HEIGHT:-0}" != "0" ]] && video_format="${video_format}[height<=${HEIGHT}]"
 	fi
 	unset filepath
-	filename=$(yt-dlp --print filename -o "%(title)s.%(ext)s" "${URL}" | sed 's/[^a-zA-Z0-9._-]/-/g')
+	filename=$(yt-dlp $COOKIE_ARGS --print filename -o "%(title)s.%(ext)s" "${URL}" \
+           | sed 's/[^a-zA-Z0-9._-]/-/g')
 fi
 if [[ -z "${filename}" ]]; then
 	echo "[ERROR] file not found"
@@ -145,13 +154,13 @@ fi
 if [[ ! -f "${cache}/audio.m4a" ]] || [[ ! -f "${cache}/video.mp4" ]]; then
 	if [[ -n "${audio_format:-}" ]] && [[ -n "${video_format:-}" ]]; then
 		if [[ ! -f "${cache}/audio.m4a" ]]; then
-			if ! yt-dlp -f "${audio_format}" -o "${cache}/audio.m4a" "${URL}" || [[ ! -f "${cache}/audio.m4a" ]]; then
+			if ! yt-dlp $COOKIE_ARGS -f "${audio_format}" -o "${cache}/audio.m4a" "${URL}" || [[ ! -f "${cache}/audio.m4a" ]]; then
 				echo "[ERROR] yt-dlp failed to download audio."
 				exit 1
 			fi
 		fi
 		if [[ ! -f "${cache}/video.mp4" ]]; then
-			if ! yt-dlp -f "${video_format}" -o "${cache}/video.mp4" "${URL}" || [[ ! -f "${cache}/video.mp4" ]]; then
+			if ! yt-dlp $COOKIE_ARGS -f "${video_format}" -o "${cache}/video.mp4" "${URL}" || [[ ! -f "${cache}/video.mp4" ]]; then
 				echo "[ERROR] yt-dlp failed to download video."
 				exit 1
 			fi
@@ -159,7 +168,7 @@ if [[ ! -f "${cache}/audio.m4a" ]] || [[ ! -f "${cache}/video.mp4" ]]; then
 	else
 		if [[ -z "${filepath:-}" ]]; then
 			if [[ ! -f "${cache}/${filename}" ]]; then
-				if ! yt-dlp -o "${cache}/${filename}" "${URL}" || [[ ! -f "${cache}/${filename}" ]]; then
+				if ! yt-dlp $COOKIE_ARGS -o "${cache}/${filename}" "${URL}" || [[ ! -f "${cache}/${filename}" ]]; then
 					echo "[ERROR] yt-dlp failed to download audio+video."
 					exit 1
 				fi
