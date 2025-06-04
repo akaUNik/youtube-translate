@@ -158,7 +158,7 @@ if [[ ! -f "${cache}/audio.mp3" ]]; then
 	echo "[INFO] Downloading translated audio with vot-cli..."
 	if ! vot-cli \
 		--lang="${FROMLANG:-en}" --reslang="${TOLANG:-ru}" \
-		--output="${cache}" --output-file="audio.mp3" "${URL}" >/dev/null || [[ ! -f "${cache}/audio.mp3" ]];
+		--output="${cache}" --output-file="audio.mp3" "${URL}" || [[ ! -f "${cache}/audio.mp3" ]];
 	then
 		echo "[ERROR] vot-cli failed to download audio."
 		exit 1
